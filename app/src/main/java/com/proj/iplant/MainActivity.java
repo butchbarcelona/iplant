@@ -4,10 +4,9 @@ import android.support.v4.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -18,12 +17,17 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.proj.iplant.ble.BlunoLibrary;
+import com.proj.iplant.ble.BlunoLibraryListActivity;
 
-public class MainActivity extends BlunoLibrary
+public class MainActivity extends BlunoLibraryListActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     Fragment currFrag;
+
+
+    ScanDevicesFragment scanDevices;
+    PhFragment phFragment;
+    Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,7 +39,7 @@ public class MainActivity extends BlunoLibrary
 
 
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
 
         AppBarLayout.LayoutParams layoutParams = (AppBarLayout.LayoutParams) toolbar.getLayoutParams();
         LayoutInflater inflator = (LayoutInflater) this .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -43,6 +47,7 @@ public class MainActivity extends BlunoLibrary
         View v = inflator.inflate(R.layout.actionbar, null);
         toolbar.addView(v);
         toolbar.setLayoutParams(layoutParams);
+        toolbar.setTitle("");
         setSupportActionBar(toolbar);
         toolbar.setNavigationIcon(R.drawable.short_hamburg);
         toolbar.setElevation(0f);
@@ -53,7 +58,8 @@ public class MainActivity extends BlunoLibrary
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
         if (savedInstanceState == null) {
-            currFrag = new ScanDevices();
+            scanDevices = new ScanDevicesFragment();
+            currFrag = scanDevices;
             fragmentTransaction.add(R.id.frame_content, currFrag);
             fragmentTransaction.commit();
         }
@@ -133,7 +139,27 @@ public class MainActivity extends BlunoLibrary
     }
 
     @Override
-    public void onSerialReceived(String theString) {
+    public void onSerialReceived( String bleData ) {
+        bleData = bleData.trim().toUpperCase();
+        Log.e("bluno", "data:"+ bleData);
+
+        if(phFragment != null) {
+            float phLevel = Float.valueOf(bleData);
+            phFragment.setpHLevel(phLevel);
+        }
+    }
+
+    public void goToPhPage(){
+        FragmentManager fragmentManager =
+                this.getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.hide(currFrag);
+        phFragment = new PhFragment();
+        currFrag = phFragment;
+        fragmentTransaction.add(R.id.frame_content, currFrag);
+        fragmentTransaction.show(currFrag);
+        fragmentTransaction.commit();
+        toolbar.setVisibility(View.GONE);
 
     }
 
