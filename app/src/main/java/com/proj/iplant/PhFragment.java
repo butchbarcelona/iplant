@@ -1,6 +1,8 @@
 package com.proj.iplant;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -8,8 +10,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.w3c.dom.Text;
 
@@ -54,10 +60,23 @@ public class PhFragment extends Fragment {
     TextView tvPHLevel = null;
     CropsAdapter cropsAdapter;
 
+    float phLevel;
 
-    public void setpHLevel(float pHLevel){
+
+    public void setpHLevel(String pHLevel){
+//        this.phLevel = Float.valueOf(pHLevel);
+        if(tvPHLevel != null) {
+            tvPHLevel.setText(pHLevel);
+            //this.phLevel = Float.valueOf(pHLevel);
+        }
         if(cropsAdapter != null) {
-            cropsAdapter.setpHLevel(pHLevel);
+            try {
+                cropsAdapter.setpHLevel(Float.valueOf(pHLevel));
+                cropsAdapter.notifyDataSetChanged();
+            }catch(Exception e){
+                //Toast.makeText(this.getActivity(),"Cannot parse data from device:"+pHLevel,Toast.LENGTH_SHORT).show();
+            }
+
         }
     }
 
@@ -68,12 +87,14 @@ public class PhFragment extends Fragment {
 
     }
 
+
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_ph, container, false);
-        tvPHLevel = (TextView) view.findViewById(R.id.tv_crop_name);
+        tvPHLevel = (TextView) view.findViewById(R.id.tv_ph);
 
 
         ListView lvCrops = (ListView) view.findViewById(R.id.lv_crops);
@@ -81,11 +102,55 @@ public class PhFragment extends Fragment {
         lvCrops.setAdapter(cropsAdapter);
 
 
+        ImageButton btnSave = (ImageButton) view.findViewById(R.id.btn_save);
+        btnSave.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showLocationDialog();
+            }
+        });
+        ImageButton btnBack = (ImageButton) view.findViewById(R.id.btn_back);
+        btnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ((MainActivity)PhFragment.this.getActivity()).goToScan();
+            }
+        });
+
 
         return view;
     }
 
+    public void showLocationDialog() {
 
+        View view = this.getActivity().getLayoutInflater().inflate(R.layout.dialog_location,null);
+
+        final EditText etLoc = (EditText) view.findViewById(R.id.et_location);
+
+        new CustomAlertDialogBuilder(this.getActivity())
+                .setView(view)
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        String location = etLoc.getText().toString();
+
+                        if(location.isEmpty()){
+                            Toast.makeText(PhFragment.this.getActivity(),"Please input a location",Toast.LENGTH_SHORT).show();
+                        }else {
+                            ((MainActivity)PhFragment.this.getActivity()).addLogToCSV(phLevel, location);
+                            dialog.dismiss();
+                        }
+                    }
+                })
+                .setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                })
+                .show();
+    }
 
     @Override
     public void onAttach(Context context) {
@@ -113,7 +178,6 @@ public class PhFragment extends Fragment {
                 }
             }
 
-            this.notifyDataSetChanged();
         }
 
 

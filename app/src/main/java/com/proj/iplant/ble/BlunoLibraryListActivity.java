@@ -134,11 +134,7 @@ public abstract  class BlunoLibraryListActivity  extends AppCompatActivity {
         // Initializes and show the scan Device Dialog
 
 
-
-
-
-
-       /* mScanDeviceDialog = new AlertDialog.Builder(mainContext)
+        /*mScanDeviceDialog = new AlertDialog.Builder(mainContext)
                 .setTitle("BLE Device Scan...").setAdapter(mLeDeviceListAdapter, new DialogInterface.OnClickListener() {
 
                     @Override
@@ -185,12 +181,12 @@ public abstract  class BlunoLibraryListActivity  extends AppCompatActivity {
 
                         mConnectionState = connectionStateEnum.isToScan;
                         onConectionStateChange(mConnectionState);
-                        //mScanDeviceDialog.dismiss();
+                        mScanDeviceDialog.dismiss();
 
                         scanLeDevice(false);
                     }
-                }).create();*/
-
+                }).create();
+*/
     }
 
 
@@ -227,7 +223,7 @@ public abstract  class BlunoLibraryListActivity  extends AppCompatActivity {
         mLeDeviceListAdapter.clear();
         mConnectionState= connectionStateEnum.isToScan;
         onConectionStateChange(mConnectionState);
-        //mScanDeviceDialog.dismiss();
+       // mScanDeviceDialog.dismiss();
         if(mBluetoothLeService!=null)
         {
             mBluetoothLeService.disconnect();
@@ -364,6 +360,8 @@ public abstract  class BlunoLibraryListActivity  extends AppCompatActivity {
     public void buttonScanOnClickProcess(ListView listView, final OnBLEDeviceListClickListener bleDeviceListClickListener)
     {
         if (listView != null) {
+
+            scanLeDevice(false);
             lvDevices = listView;
             lvDevices.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override

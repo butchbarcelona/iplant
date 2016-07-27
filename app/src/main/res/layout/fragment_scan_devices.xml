@@ -4,8 +4,6 @@
     android:layout_height="match_parent"
     tools:context=".ScanDevicesFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -18,18 +16,31 @@
             android:id="@+id/scanning_ll"
             android:visibility="gone">
 
-            <TextView
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="Scanning Devices ..."
-                android:id="@+id/textView"
-                android:layout_gravity="center_horizontal"
-                android:padding="20dp"
-                android:background="@color/colorAccent"
-                android:contextClickable="true"
-                android:textColor="@color/abc_primary_text_material_dark"
-                android:textAlignment="center" />
+                android:orientation="horizontal"
+                android:background="@color/colorAccent">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="Scanning Devices ..."
+                    android:id="@+id/textView"
+                    android:layout_gravity="center_horizontal"
+                    android:padding="20dp"
+                    android:contextClickable="true"
+                    android:textColor="@color/abc_primary_text_material_dark"
+                    android:textAlignment="center" />
+                <ImageButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@android:drawable/ic_menu_rotate"
+                    android:background="#00ffffff"
+                    android:id="@+id/btn_refresh"
+                    android:layout_gravity="center_horizontal"
+                    />
+            </LinearLayout>
             <ListView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -37,7 +48,7 @@
                 />
         </LinearLayout>
     </FrameLayout>
-
+<!--
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -54,6 +65,6 @@
         android:text="All Rights Reserved 2016"
         android:id="@+id/textView4"
         android:layout_gravity="center_horizontal|bottom"
-        android:textSize="10dp" />
+        android:textSize="10dp" />-->
 
 </FrameLayout>
