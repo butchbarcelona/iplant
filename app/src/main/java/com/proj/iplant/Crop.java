@@ -7,11 +7,13 @@ public class Crop {
 
     String name;
     float min, max;
+    String url;
 
-    public Crop(String name, float min, float max) {
+    public Crop(String name, float min, float max, String url) {
         this.name = name;
         this.min = min;
         this.max = max;
+        this.url = url;
     }
 
     public String getName() {
@@ -36,5 +38,13 @@ public class Crop {
 
     public void setMax(float max) {
         this.max = max;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
     }
 }

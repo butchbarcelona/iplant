@@ -51,6 +51,7 @@ public class MainActivity extends BlunoLibraryListActivity
 
     ScanDevicesFragment scanDevices;
     PhFragment phFragment;
+    WebViewFragment webViewFragment;
     Toolbar toolbar;
     private static final int PERMISSION_REQUEST_COARSE_LOCATION = 1;
 
@@ -133,8 +134,12 @@ public class MainActivity extends BlunoLibraryListActivity
 
             if(currFrag.equals(phFragment)){
                 goToScan();
-            }else{
+            }else if(currFrag.equals(webViewFragment)) {
+                goToPhPage();
+            }else
+            {
                 scanDevices.resetPage();
+
             }
         }
     }
@@ -224,14 +229,35 @@ public class MainActivity extends BlunoLibraryListActivity
         }
     }
 
+    public void goToWebView(String url){
+        FragmentManager fragmentManager =
+                this.getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.hide(currFrag);
+        if(webViewFragment != null)
+            fragmentTransaction.remove(webViewFragment);
+
+        webViewFragment = new WebViewFragment();
+        fragmentTransaction.add(R.id.frame_content, webViewFragment);
+
+        webViewFragment.changeUrl(url);
+        currFrag = webViewFragment;
+        fragmentTransaction.show(currFrag);
+        fragmentTransaction.commit();
+        //toolbar.setVisibility(View.VISIBLE);
+
+    }
+
     public void goToPhPage(){
         FragmentManager fragmentManager =
                 this.getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.hide(currFrag);
-        phFragment = new PhFragment();
+        if(phFragment == null) {
+            phFragment = new PhFragment();
+            fragmentTransaction.add(R.id.frame_content, phFragment);
+        }
         currFrag = phFragment;
-        fragmentTransaction.add(R.id.frame_content, currFrag);
         fragmentTransaction.show(currFrag);
         fragmentTransaction.commit();
         toolbar.setVisibility(View.GONE);
